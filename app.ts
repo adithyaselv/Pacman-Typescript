@@ -1,3 +1,5 @@
+// Created from : https://www.youtube.com/watch?v=5IMXpp3rohQ
+
 let welcome: string = "Welcome to TypeScript! Pacman";
 
 let heading: HTMLElement = document.createElement("h1");
@@ -59,9 +61,9 @@ class Pacman {
 const gameMap: string[][] = [
     ['-', '-','-','-','-','-','-'],
     ['-', ' ',' ',' ',' ',' ','-'],
+    ['-', ' ','-',' ','-',' ','-'],
     ['-', ' ',' ',' ',' ',' ','-'],
-    ['-', ' ',' ','-',' ',' ','-'],
-    ['-', ' ',' ',' ','-',' ','-'],
+    ['-', ' ','-',' ','-',' ','-'],
     ['-', ' ',' ',' ',' ',' ','-'],
     ['-', '-','-','-','-','-','-'],
 ]
@@ -76,48 +78,93 @@ gameMap.forEach((row, y) => {
     });
 });
 
-boundaries.forEach(boundary => boundary.draw());
-
 const pacman: Pacman = new Pacman({ x: Boundary.width + Boundary.width /2, y: Boundary.height + Boundary.height /2 });
 
-pacman.draw();
+const keys = {
+    w: {
+        isDown: false,
+    },
+    a: {
+        isDown: false,
+    },
+    s: {
+        isDown: false,
+    },
+    d: {
+        isDown: false,
+    }
+}
+
+let lastKey: string = "";
 
 let animate = () => {
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    boundaries.forEach(boundary => boundary.draw());
+    boundaries.forEach(boundary => {
+        boundary.draw();
+
+        if (pacman.position.x + pacman.radius + pacman.velocity.x >= boundary.position.x && 
+            pacman.position.x - pacman.radius + pacman.velocity.x <= boundary.position.x + Boundary.width &&
+            pacman.position.y + pacman.radius + pacman.velocity.y >= boundary.position.y &&
+            pacman.position.y - pacman.radius + pacman.velocity.y <= boundary.position.y + Boundary.height) {
+                pacman.velocity.x = 0;
+                pacman.velocity.y = 0;
+            }
+    });
     pacman.update();
+
+    pacman.velocity.x = 0;
+    pacman.velocity.y = 0;
+
+    if (keys.w.isDown && lastKey === "w") {
+        pacman.velocity.y = -5;
+    }
+    else if (keys.a.isDown && lastKey === "a") {
+        pacman.velocity.x = -5;
+    }
+    else if (keys.s.isDown && lastKey === "s") {
+        pacman.velocity.y = 5;
+    }
+    else if (keys.d.isDown && lastKey === "d") {
+        pacman.velocity.x = 5;
+    }
 }
 
 window.addEventListener("keydown", (e: KeyboardEvent) => {
     switch (e.key) {
         case "a":
-            pacman.velocity.x = -5;
+            keys.a.isDown = true;
+            lastKey = "a";
             break;
         case "d":
-            pacman.velocity.x = 5;
+            keys.d.isDown = true;
+            lastKey = "d";
             break;
         case "w":
-            pacman.velocity.y = -5;
+            keys.w.isDown = true;
+            lastKey = "w";  
             break;
         case "s":
-            pacman.velocity.y = 5;
+            keys.s.isDown = true;
+            lastKey = "s"; 
+            break;
     }
 });
 
 window.addEventListener("keyup", (e: KeyboardEvent) => {
     switch (e.key) {
         case "a":
-            pacman.velocity.x = 0;
+            keys.a.isDown = false;
             break;
         case "d":
-            pacman.velocity.x = 0;
+            keys.d.isDown = false;
             break;
         case "w":
-            pacman.velocity.y = 0;
+            keys.w.isDown = false;  
             break;
         case "s":
-            pacman.velocity.y = 0;
+            keys.s.isDown = false; 
+            break;
     }
 });
 
