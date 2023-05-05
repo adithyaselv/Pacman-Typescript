@@ -1,5 +1,7 @@
 // Created from : https://www.youtube.com/watch?v=5IMXpp3rohQ
 
+import { Boundary, Position } from "./Boundary";
+
 let welcome: string = "Welcome to TypeScript! Pacman";
 
 let heading: HTMLElement = document.createElement("h1");
@@ -16,25 +18,6 @@ canvas.id = "cvs";
 let app: HTMLElement = document.getElementById("app");
 app.appendChild(heading);
 app.appendChild(canvas);
-
-type Position = { x: number, y: number };
-
-class Boundary {
-    position: Position;
-    image: HTMLImageElement;
-    static width = 40;
-    static height = 40;
-    constructor(position: Position, image: HTMLImageElement) {
-        this.position = position;
-        this.image = image;
-    }
-
-    draw() {
-        // ctx.fillStyle = "blue";
-        // ctx.fillRect(this.position.x, this.position.y, Boundary.width, Boundary.height);
-        ctx.drawImage(this.image, this.position.x, this.position.y, Boundary.width, Boundary.height);
-    }
-}
 
 class Pacman {
     position: Position;
@@ -113,25 +96,25 @@ bottom_right.src = "./sprites/bottom-right.png";
 gameMap.forEach((row, y) => {
     row.forEach((cell, x) => {
         if (cell === '-') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, block));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, block, ctx));
         }
         else if (cell === '=') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_bottom));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_bottom, ctx));
         }
         else if (cell === '|') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, left_right));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, left_right, ctx));
         }
         else if (cell === 'tl') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_left));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_left, ctx));
         }
         else if (cell === 'tr') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_right));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, top_right, ctx));
         }
         else if (cell === 'bl') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, bottom_left));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, bottom_left, ctx));
         }
         else if (cell === 'br') {
-            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, bottom_right));
+            boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, bottom_right, ctx));
         }
         else if (cell === '*') {
             foodPellets.push(new Food({ x: x * Boundary.width + Boundary.width/2, y: y * Boundary.height + Boundary.height/2 }));
