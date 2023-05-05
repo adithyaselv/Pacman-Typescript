@@ -1,6 +1,8 @@
 // Created from : https://www.youtube.com/watch?v=5IMXpp3rohQ
 
-import { Boundary, Position } from "./Boundary";
+import { Boundary } from "./Boundary";
+import Pacman  from "./Pacman";
+import Food from "./Food";
 
 let welcome: string = "Welcome to TypeScript! Pacman";
 
@@ -18,48 +20,6 @@ canvas.id = "cvs";
 let app: HTMLElement = document.getElementById("app");
 app.appendChild(heading);
 app.appendChild(canvas);
-
-class Pacman {
-    position: Position;
-    velocity: {x: number, y: number};
-    radius: number;
-    constructor(position: Position) {
-        this.position = position;
-        this.velocity = { x: 0, y: 0 };
-        this.radius = 15;
-    }
-
-    draw() {
-        ctx.fillStyle = "yellow";
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
-    }
-
-    update() {
-        this.draw();
-        this.position.y += this.velocity.y;
-        this.position.x += this.velocity.x;
-    }
-}
-
-class Food {
-    position: Position;
-    radius: number;
-    constructor(position: Position) {
-        this.position = position;
-        this.radius = 5;
-    }
-
-    draw() {
-        ctx.fillStyle = "green";
-        ctx.beginPath();
-        ctx.arc(this.position.x, this.position.y, this.radius, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
-    }
-}
 
 const gameMap: string[][] = [
     ['tl', '=','=','=','=','=','tr'],
@@ -117,12 +77,12 @@ gameMap.forEach((row, y) => {
             boundaries.push(new Boundary({ x: x * Boundary.width, y: y * Boundary.height }, bottom_right, ctx));
         }
         else if (cell === '*') {
-            foodPellets.push(new Food({ x: x * Boundary.width + Boundary.width/2, y: y * Boundary.height + Boundary.height/2 }));
+            foodPellets.push(new Food({ x: x * Boundary.width + Boundary.width/2, y: y * Boundary.height + Boundary.height/2 }, ctx));
         }
     });
 });
 
-const pacman: Pacman = new Pacman({ x: Boundary.width + Boundary.width /2, y: Boundary.height + Boundary.height /2 });
+const pacman: Pacman = new Pacman({ x: Boundary.width + Boundary.width /2, y: Boundary.height + Boundary.height /2 }, ctx);
 
 const keys = {
     w: {
